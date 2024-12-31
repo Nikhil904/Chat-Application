@@ -34,8 +34,6 @@ const App = () => {
       </div>
     );
 
-    console.log(theme)
-
   return (
     <div data-theme={theme}>
       <Navbar />

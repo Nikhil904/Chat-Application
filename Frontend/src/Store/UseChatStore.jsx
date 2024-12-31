@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
+import { AuthStore } from "./UseAuthStore";
 export const ChatStore = create((set, get) => ({
   messages: [],
   users: [],
@@ -12,7 +13,7 @@ export const ChatStore = create((set, get) => ({
     set({ isUserLoading: true });
     try {
       const users = await axiosInstance.get("/message/users");
-      console.log(users)
+      console.log(users);
       set({ users: users.data.data });
     } catch (error) {
       console.log("Error while getting user list");
@@ -42,6 +43,18 @@ export const ChatStore = create((set, get) => ({
     } catch (error) {
       toast.error(error.response.data.message);
     }
+  },
+
+  subscribeToMessage: async () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+    const socket = AuthStore.getState().socket;
+
+    socket.on("newMessage", (newMessage) => {
+      set({
+        messages: [...get().messages, newMessage],
+      });
+    });
   },
 
   setSelectedUser: async (selectedUser) => set({ selectedUser }),

@@ -62,7 +62,8 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    GenerateToken(user._id, res);
+    let token = GenerateToken(user._id, res);
+    console.log(token)
     let data = {
       _id: user._id,
       full_name: user.full_name,

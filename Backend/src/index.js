@@ -6,7 +6,8 @@ import rateLimit from "express-rate-limit";
 import messageRoute from "./routes/message.routes.js"
 import cookieParser from "cookie-parser";
 import cors from "cors"
-const app = express();
+import { app,server } from "./lib/Socket.js";
+
 dotenv.config();
 const PORT = process.env.PORT;
 
@@ -31,7 +32,7 @@ app.use(express.json({limit: '50mb'}));
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoute);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`listening on the port number ${PORT}`);
   connectDB();
 });

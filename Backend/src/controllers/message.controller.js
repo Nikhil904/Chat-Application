@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import cloudinary from "../lib/cloudinary.js";
+import { getReceiverSocketId, io } from "../lib/Socket.js";
 export const getAllUserList = async (req, res) => {
   try {
     const loggedUserId = req.user._id;
@@ -55,7 +56,11 @@ export const sendMessage = async (req, res) => {
     await newMessage.save();
 
     //implement the socket.io
-
+    const receiverSocketId = getReceiverSocketId(receiverId)
+    if(receiverSocketId){
+      //this event is send the event for the specific receiver
+      io.to(receiverSocketId).emit("newMessage", newMessage)
+    }
     res
       .status(201)
       .json({ messgae: "Message Send Successfully", data: newMessage });
